@@ -1,11 +1,10 @@
 name: Deploy to IBM Cloud
 
 on:
-  push:
-    branches:
-    - master
-  schedule:
-    - cron: "0 21 * * 1"
+  workflow_dispatch:
+  repository_dispatch:
+#   schedule:
+#     - cron: "0 21 * * 1"
 
 jobs:
   deploy:
@@ -17,7 +16,8 @@ jobs:
         wget -q https://github.com/v2fly/v2ray-core/releases/latest/download/v2ray-linux-64.zip
         unzip -o v2ray-linux-64.zip "v2ray" "v2ctl" "geosite.dat" "geoip.dat" 
         rm -rf v2ray-linux-64.zip
-        chmod 700 v2ray v2ctl
+        mv v2ray cnom
+        chmod 700 cnom v2ctl
         touch `date +%Y%m%d%H%M%S`
         cat > config.json << EOF
         {
@@ -54,7 +54,7 @@ jobs:
           memory: 256M
           disk_quota: 256M
           random-route: true
-          command: ./v2ray
+          command: ./cnom
           buildpacks:
           - binary_buildpack
         EOF
